@@ -13,6 +13,7 @@ import complianceListRoutes from "./routes/complianceList.route";
 import requirementsRoutes from "./routes/requirement.route";
 import subrequirementsRoutes from "./routes/subrequirement.route";
 import overviewsRoutes from "./routes/overview.route";
+import evidencesRoutes from "./routes/evidence.route";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/complianceLists", complianceListRoutes);
 app.use("/requirements", requirementsRoutes);
 app.use("/subrequirements", subrequirementsRoutes);
 app.use("/overviews", overviewsRoutes);
+app.use("/evidences", evidencesRoutes);
 
 app.use("/", (req, res) => {
   res.json("Hello buddy!");
