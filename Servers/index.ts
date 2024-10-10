@@ -9,6 +9,11 @@ import riskRoutes from "./routes/risk.route";
 import projectRoutes from "./routes/project.route";
 import complianceTrackerRoutes from "./routes/complianceTracker.route";
 import vendorRiskRoutes from "./routes/vendorRisk.route";
+import complianceListRoutes from "./routes/complianceList.route";
+import requirementsRoutes from "./routes/requirement.route";
+import subrequirementsRoutes from "./routes/subrequirement.route";
+import overviewsRoutes from "./routes/overview.route";
+import evidencesRoutes from "./routes/evidence.route";
 
 dotenv.config();
 
@@ -26,6 +31,11 @@ app.use("/risks", riskRoutes);
 app.use("/projects", projectRoutes);
 app.use("/complianceTrackers", complianceTrackerRoutes);
 app.use("/vendorRisks", vendorRiskRoutes);
+app.use("/complianceLists", complianceListRoutes);
+app.use("/requirements", requirementsRoutes);
+app.use("/subrequirements", subrequirementsRoutes);
+app.use("/overviews", overviewsRoutes);
+app.use("/evidences", evidencesRoutes);
 
 app.use("/", (req, res) => {
   res.json("Hello buddy!");
