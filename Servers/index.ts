@@ -11,6 +11,7 @@ import complianceTrackerRoutes from "./routes/complianceTracker.route";
 import vendorRiskRoutes from "./routes/vendorRisk.route";
 import complianceListRoutes from "./routes/complianceList.route";
 import requirementsRoutes from "./routes/requirement.route";
+import subrequirementsRoutes from "./routes/subrequirement.route";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/complianceTrackers", complianceTrackerRoutes);
 app.use("/vendorRisks", vendorRiskRoutes);
 app.use("/complianceLists", complianceListRoutes);
 app.use("/requirements", requirementsRoutes);
+app.use("/subrequirements", subrequirementsRoutes);
 
 app.use("/", (req, res) => {
   res.json("Hello buddy!");
