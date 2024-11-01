@@ -69,18 +69,55 @@ export async function getEvidenceById(req: Request, res: Response): Promise<any>
 
 export async function createEvidence(req: Request, res: Response): Promise<any> {
   try {
-    const { name, description } = req.body;
+    const {
+      subrequirement_id,
+      document_name,
+      document_type,
+      file_path,
+      uploader_id,
+      description,
+      status,
+      reviewer_id,
+      review_comments
+    } = req.body;
 
-    if (!name || !description) {
+    var upload_date, last_reviewed;
+    upload_date = last_reviewed = new Date().toUTCString()
+
+    if (
+      !subrequirement_id ||
+      !document_name ||
+      !document_type ||
+      !file_path ||
+      !upload_date ||
+      !uploader_id ||
+      !description ||
+      !status ||
+      !last_reviewed ||
+      !reviewer_id ||
+      !review_comments
+    ) {
       return res
         .status(400)
         .json(
-          STATUS_CODE[400]({ message: "name and description are required" })
+          STATUS_CODE[400]({ message: "subrequirement_id, document_name, document_type, file_path, upload_date, uploader_id, description, status, last_reviewed, reviewer_id and review_comments are required" })
         );
     }
 
     if (MOCK_DATA_ON === "true") {
-      const newEvidence = createMockEvidence({ name, description });
+      const newEvidence = createMockEvidence({
+        subrequirement_id,
+        document_name,
+        document_type,
+        file_path,
+        upload_date,
+        uploader_id,
+        description,
+        status,
+        last_reviewed,
+        reviewer_id,
+        review_comments
+      });
 
       if (newEvidence) {
         return res.status(201).json(STATUS_CODE[201](newEvidence));
@@ -88,7 +125,19 @@ export async function createEvidence(req: Request, res: Response): Promise<any> 
 
       return res.status(503).json(STATUS_CODE[503]({}));
     } else {
-      const newEvidence = await createNewEvidenceQuery({ name, description });
+      const newEvidence = await createNewEvidenceQuery({
+        subrequirement_id,
+        document_name,
+        document_type,
+        file_path,
+        upload_date,
+        uploader_id,
+        description,
+        status,
+        last_reviewed,
+        reviewer_id,
+        review_comments
+      });
 
       if (newEvidence) {
         return res.status(201).json(STATUS_CODE[201](newEvidence));
@@ -108,9 +157,33 @@ export async function updateEvidenceById(
   console.log("updateEvidenceById");
   try {
     const evidenceId = parseInt(req.params.id);
-    const { name, description } = req.body;
+    const {
+      subrequirement_id,
+      document_name,
+      document_type,
+      file_path,
+      upload_date,
+      uploader_id,
+      description,
+      status,
+      last_reviewed,
+      reviewer_id,
+      review_comments
+    } = req.body;
 
-    if (!name || !description) {
+    if (
+      !subrequirement_id ||
+      !document_name ||
+      !document_type ||
+      !file_path ||
+      !upload_date ||
+      !uploader_id ||
+      !description ||
+      !status ||
+      !last_reviewed ||
+      !reviewer_id ||
+      !review_comments
+    ) {
       return res
         .status(400)
         .json(
@@ -119,7 +192,19 @@ export async function updateEvidenceById(
     }
 
     if (MOCK_DATA_ON === "true") {
-      const updatedEvidence = updateMockEvidenceById(evidenceId, { name, description });
+      const updatedEvidence = updateMockEvidenceById(evidenceId, {
+        subrequirement_id,
+        document_name,
+        document_type,
+        file_path,
+        upload_date,
+        uploader_id,
+        description,
+        status,
+        last_reviewed,
+        reviewer_id,
+        review_comments
+      });
 
       if (updatedEvidence) {
         return res.status(202).json(STATUS_CODE[202](updatedEvidence));
@@ -128,8 +213,17 @@ export async function updateEvidenceById(
       return res.status(404).json(STATUS_CODE[404]({}));
     } else {
       const updatedEvidence = await updateEvidenceByIdQuery(evidenceId, {
-        name,
+        subrequirement_id,
+        document_name,
+        document_type,
+        file_path,
+        upload_date,
+        uploader_id,
         description,
+        status,
+        last_reviewed,
+        reviewer_id,
+        review_comments
       });
 
       if (updatedEvidence) {
