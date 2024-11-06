@@ -38,6 +38,8 @@ import {
   createTable,
   insertData,
 } from "../utils/autoDriver.util";
+import { evidences } from "../mocks/evidences/evidences.data";
+import { Evidence } from "../models/Evidence";
 
 interface TableEntry<T> {
   mockData: T[];
@@ -59,6 +61,7 @@ type TableList = [
   TableEntry<ComplianceList>,
   TableEntry<Requirement>,
   TableEntry<Subrequirement>,
+  TableEntry<Evidence>,
   TableEntry<Overview>,
   TableEntry<AuditorFeedback>,
   TableEntry<SubrequirementEvidence>,
@@ -99,9 +102,8 @@ const insertQuery: TableList = [
     insertString:
       "INSERT INTO users(name, email, password_hash, role, created_at, last_login) VALUES ",
     generateValuesString: function (user: User) {
-      return `('${user.name}', '${user.email}', '${user.password_hash}', ${
-        user.role
-      }, '${user.created_at.toISOString()}', '${user.last_login.toISOString()}')`;
+      return `('${user.name}', '${user.email}', '${user.password_hash}', ${user.role
+        }, '${user.created_at.toISOString()}', '${user.last_login.toISOString()}')`;
     },
   },
   {
@@ -123,11 +125,9 @@ const insertQuery: TableList = [
     insertString:
       "INSERT INTO projects(name, description, last_updated, owner_id, compliance_status, controls_completed, requirements_completed)	VALUES ",
     generateValuesString: function (project: Project) {
-      return `('${project.name}', '${project.description}', '${
-        project.last_updated.toISOString().split("T")[0]
-      }', ${project.owner_id}, '${project.compliance_status}', ${
-        project.controls_completed
-      }, ${project.requirements_completed})`;
+      return `('${project.name}', '${project.description}', '${project.last_updated.toISOString().split("T")[0]
+        }', ${project.owner_id}, '${project.compliance_status}', ${project.controls_completed
+        }, ${project.requirements_completed})`;
     },
   },
   {
@@ -311,6 +311,32 @@ const insertQuery: TableList = [
     },
   },
   {
+    mockData: evidences,
+    tableName: "evidences",
+    createString: `CREATE TABLE evidences (
+      id SERIAL PRIMARY KEY,
+      subrequirement_id INT,
+      document_name VARCHAR(255),
+      document_type VARCHAR(100),
+      file_path VARCHAR(500),
+      upload_date TIMESTAMP,
+      uploader_id INT,
+      description TEXT,
+      status VARCHAR(50),
+      last_reviewed TIMESTAMP,
+      reviewer_id INT,
+      review_comments TEXT,
+      FOREIGN KEY (subrequirement_id) REFERENCES subrequirements(id) ON DELETE SET NULL,
+      FOREIGN KEY (uploader_id) REFERENCES users(id) ON DELETE SET NULL,
+      FOREIGN KEY (reviewer_id) REFERENCES users(id) ON DELETE SET NULL
+    );`,
+    insertString:
+      "INSERT INTO evidences(subrequirement_id, document_name, document_type, file_path, upload_date, uploader_id, description, status, last_reviewed, reviewer_id, review_comments) VALUES ",
+    generateValuesString: function (evidence: Evidence) {
+      return `('${evidence.subrequirement_id}','${evidence.document_name}','${evidence.document_type}','${evidence.file_path}','${evidence.upload_date}','${evidence.uploader_id}','${evidence.description}','${evidence.status}','${evidence.last_reviewed}','${evidence.reviewer_id}','${evidence.review_comments}')`
+    },
+  },
+  {
     mockData: overviews,
     tableName: "overviews",
     createString: `CREATE TABLE overviews(
@@ -332,15 +358,11 @@ const insertQuery: TableList = [
     insertString:
       "INSERT INTO overviews(subrequirement_id, control_name, control_description, control_owner, control_status, implementation_description, implementation_evidence, effective_date, review_date, comments) VALUES ",
     generateValuesString: function (overview: Overview) {
-      return `(${overview.subrequirement_id}, '${overview.control_name}', '${
-        overview.control_description
-      }', '${overview.control_owner}', '${overview.control_status}', '${
-        overview.implementation_description
-      }', '${overview.implementation_evidence}', '${
-        overview.effective_date.toISOString().split("T")[0]
-      }', '${overview.review_date.toISOString().split("T")[0]}', '${
-        overview.comments
-      }')`;
+      return `(${overview.subrequirement_id}, '${overview.control_name}', '${overview.control_description
+        }', '${overview.control_owner}', '${overview.control_status}', '${overview.implementation_description
+        }', '${overview.implementation_evidence}', '${overview.effective_date.toISOString().split("T")[0]
+        }', '${overview.review_date.toISOString().split("T")[0]}', '${overview.comments
+        }')`;
     },
   },
   {
@@ -371,19 +393,13 @@ const insertQuery: TableList = [
     insertString:
       "INSERT INTO auditorfeedbacks(subrequirement_id, assessment_type, assessment_date, auditor_id, compliance_status, findings, recommendations, corrective_actions, follow_up_date, follow_up_notes, attachments, created_at, updated_at) VALUES ",
     generateValuesString: function (auditorFeedback: AuditorFeedback) {
-      return `(${auditorFeedback.subrequirement_id}, '${
-        auditorFeedback.assessment_type
-      }', '${auditorFeedback.assessment_date.toISOString().split("T")[0]}', ${
-        auditorFeedback.auditor_id
-      }, '${auditorFeedback.compliance_status}', '${
-        auditorFeedback.findings
-      }', '${auditorFeedback.recommendations}', '${
-        auditorFeedback.corrective_actions
-      }', '${auditorFeedback.follow_up_date.toISOString().split("T")[0]}', '${
-        auditorFeedback.follow_up_notes
-      }', '${auditorFeedback.attachments}', '${
-        auditorFeedback.created_at.toISOString().split("T")[0]
-      }', '${auditorFeedback.updated_at.toISOString().split("T")[0]}')`;
+      return `(${auditorFeedback.subrequirement_id}, '${auditorFeedback.assessment_type
+        }', '${auditorFeedback.assessment_date.toISOString().split("T")[0]}', ${auditorFeedback.auditor_id
+        }, '${auditorFeedback.compliance_status}', '${auditorFeedback.findings
+        }', '${auditorFeedback.recommendations}', '${auditorFeedback.corrective_actions
+        }', '${auditorFeedback.follow_up_date.toISOString().split("T")[0]}', '${auditorFeedback.follow_up_notes
+        }', '${auditorFeedback.attachments}', '${auditorFeedback.created_at.toISOString().split("T")[0]
+        }', '${auditorFeedback.updated_at.toISOString().split("T")[0]}')`;
     },
   },
   {
@@ -411,19 +427,13 @@ const insertQuery: TableList = [
     generateValuesString: function (
       subrequirementEvidence: SubrequirementEvidence
     ) {
-      return `(${subrequirementEvidence.subrequirement_id}, '${
-        subrequirementEvidence.document_name
-      }', '${subrequirementEvidence.document_type}', '${
-        subrequirementEvidence.file_path
-      }', '${
-        subrequirementEvidence.upload_date.toISOString().split("T")[0]
-      }', ${subrequirementEvidence.uploader_id}, '${
-        subrequirementEvidence.description
-      }', '${subrequirementEvidence.status}', '${
-        subrequirementEvidence.last_reviewed.toISOString().split("T")[0]
-      }', ${subrequirementEvidence.reviewer_id}, '${
-        subrequirementEvidence.reviewer_comments
-      }')`;
+      return `(${subrequirementEvidence.subrequirement_id}, '${subrequirementEvidence.document_name
+        }', '${subrequirementEvidence.document_type}', '${subrequirementEvidence.file_path
+        }', '${subrequirementEvidence.upload_date.toISOString().split("T")[0]
+        }', ${subrequirementEvidence.uploader_id}, '${subrequirementEvidence.description
+        }', '${subrequirementEvidence.status}', '${subrequirementEvidence.last_reviewed.toISOString().split("T")[0]
+        }', ${subrequirementEvidence.reviewer_id}, '${subrequirementEvidence.reviewer_comments
+        }')`;
     },
   },
   {
